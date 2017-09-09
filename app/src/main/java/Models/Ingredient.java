@@ -6,7 +6,7 @@ package Models;
 
 public class Ingredient {
 
-    private int quatity;
+    private double quatity;
     private String measure;
     private String ingredient;
 
@@ -16,7 +16,7 @@ public class Ingredient {
         this.ingredient = ingredient;
     }
 
-    public int getQuatity() {
+    public double getQuatity() {
         return quatity;
     }
 

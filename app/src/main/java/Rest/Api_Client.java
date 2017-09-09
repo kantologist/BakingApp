@@ -11,11 +11,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Api_Client {
 
     private static final String BASE_URL =
-            "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
+            "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
     private static Retrofit retrofit = null;
 
 
-    private static Retrofit recipeRequest()
+    public static Retrofit recipeRequest()
     {
         if (retrofit == null) {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();

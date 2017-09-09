@@ -1,0 +1,69 @@
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:divider="?android:attr/dividerHorizontal"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        tools:context="com.example.femi.bakingapp.RecipeDescriptionListActivity">
+
+        <!--
+        This layout is a two-pane layout for the RecipeDtails
+        master/detail flow.
+
+        -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="@dimen/item_width"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Ingredients"
+                android:textSize="25sp"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:textColor="@android:color/black"
+                android:background="@color/ingredient"/>
+
+            <TextView
+                android:id="@+id/ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:textSize="20sp"
+                android:background="@color/ingredient"
+                android:text="Hello testing"/>
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/recipedescription_list"
+                android:name="com.example.femi.bakingapp.RecipeDescriptionListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                app:layoutManager="LinearLayoutManager"
+                tools:context="com.example.femi.bakingapp.RecipeDescriptionListActivity"
+                tools:listitem="@layout/recipedescription_list_content" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/recipedescription_detail_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3" />
+
+    </LinearLayout>
+
+</ScrollView>
+

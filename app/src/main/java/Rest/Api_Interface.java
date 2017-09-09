@@ -1,5 +1,7 @@
 package Rest;
 
+import java.util.List;
+
 import Models.Recipe;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -13,6 +15,6 @@ import retrofit2.http.GET;
 
 public interface Api_Interface {
 
-    @GET("")
-    Call<Recipe> getRecipe();
+    @GET("baking.json")
+    Call<List<Recipe>> getRecipe();
 }
