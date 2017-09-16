@@ -3,6 +3,7 @@
     package="com.example.femi.bakingapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -22,7 +23,6 @@
         <activity
             android:name=".RecipeDescriptionListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:label="@string/title_recipedescription_list"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -31,7 +31,6 @@
         </activity>
         <activity
             android:name=".RecipeDescriptionDetailActivity"
-            android:label="@string/title_recipedescription_detail"
             android:parentActivityName=".RecipeDescriptionListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -39,7 +38,7 @@
                 android:value="com.example.femi.bakingapp.RecipeDescriptionListActivity" />
         </activity>
 
-        <receiver android:name="Widgets.IngredientsWidget">
+        <receiver android:name=".IngredientsWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

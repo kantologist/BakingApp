@@ -1,4 +1,4 @@
-package Widgets;
+package com.example.femi.bakingapp;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -16,17 +16,7 @@ public class IngredientsWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                context.getString(R.string.preferred_recipe), context.MODE_PRIVATE);
 
-        String widgetText =
-                sharedPreferences.getString(context.getString(R.string.appwidget_text), "No preferred ingredients");
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override

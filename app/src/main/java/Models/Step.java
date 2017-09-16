@@ -1,5 +1,7 @@
 package Models;
 
+import io.realm.RealmObject;
+
 /**
  * Created by femi on 9/6/17.
  */
@@ -11,6 +13,7 @@ public class Step {
     private String description;
     private String videoURL;
     private String thumbnailURL;
+
 
     public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
 

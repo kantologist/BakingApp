@@ -1,5 +1,7 @@
 package com.example.femi.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,10 +17,12 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -48,6 +52,7 @@ public class RecipeDescriptionListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private static final String RECIPE_KEY="recipe_key";
     private Recipe recipe;
     private List<Ingredient> ingredients;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -64,24 +69,28 @@ public class RecipeDescriptionListActivity extends AppCompatActivity {
 
         String pass_recipe = getIntent().getStringExtra("Recipe");
         Gson gson = new Gson();
-        recipe = gson.fromJson(pass_recipe, Recipe.class);
-        ingredients = recipe.getIngredients();
+        if(savedInstanceState != null){
+            String saved_recipe = savedInstanceState.getString(RECIPE_KEY);
+            recipe = gson.fromJson(saved_recipe, Recipe.class);
+            ingredients = recipe.getIngredients();
+        } else {
 
-        setSupportActionBar(toolbar);
+            recipe = gson.fromJson(pass_recipe, Recipe.class);
+            ingredients = recipe.getIngredients();
+        }
+
+//        setSupportActionBar(toolbar);
         toolbar.setTitle(recipe.getName());
 
         for(Ingredient ingredient:ingredients){
             ing_list += "." + String.valueOf(ingredient.getIngredient())
-                    +"("+String.valueOf(ingredient.getQuatity())
+                    +"("+String.valueOf(ingredient.getQuantity())
                     +String.valueOf(ingredient.getMeasure())+")\n";
         }
         ingredient_text.setText(ing_list);
         Timber.d("the new string is: " + ing_list);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
 
         View recyclerView = findViewById(R.id.recipedescription_list);
         assert recyclerView != null;
@@ -94,10 +103,23 @@ public class RecipeDescriptionListActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab_love)
     public void fabClicked(){
-        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(getString(R.string.preferred_recipe), ing_list);
-        editor.commit();
+        Toast.makeText(this, "Widget is update with ingredient", Toast.LENGTH_SHORT).show();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        RemoteViews remoteViews = new RemoteViews(this.getPackageName(), R.layout.ingredients_widget);
+        ComponentName widget = new ComponentName(this, IngredientsWidget.class);
+        remoteViews.setTextViewText(R.id.appwidget_text, ing_list);
+        remoteViews.setTextViewText(R.id.appwidget_header, recipe.getName());
+        appWidgetManager.updateAppWidget(widget, remoteViews);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        Gson gson = new Gson();
+        String pass_recipe = gson.toJson(recipe);
+        outState.putString(RECIPE_KEY, pass_recipe);
+        Timber.d("I have saved it");
+        super.onSaveInstanceState(outState);
     }
 
     @Override

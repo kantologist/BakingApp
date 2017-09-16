@@ -2,11 +2,15 @@ package Models;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
  * Created by femi on 9/6/17.
  */
 
-public class Recipe {
+public class Recipe{
 
     private int id;
     private String name;
@@ -15,6 +19,7 @@ public class Recipe {
     private int servings;
     private String image;
 
+    public Recipe(){}
 
     public Recipe(int id, String name, List<Ingredient> ingredients,
                   List<Step> steps, int servings, String image){

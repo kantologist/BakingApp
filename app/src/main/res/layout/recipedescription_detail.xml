@@ -24,28 +24,4 @@
         android:textIsSelectable="true"
         tools:context="com.example.femi.bakingapp.RecipeDescriptionDetailFragment"/>
 
-    <RelativeLayout
-        android:id="@+id/recipe_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
-
-        <Button
-            android:id="@+id/p_recipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Previous Recipe"
-            android:layout_alignParentLeft="true"/>
-
-        <Button
-            android:id="@+id/n_recipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="0dp"
-            android:text="Next Recipe"
-            android:layout_alignParentRight="true"/>
-
-    </RelativeLayout>
-
 </LinearLayout>

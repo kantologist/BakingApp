@@ -54,9 +54,6 @@ public class RecipeDescriptionDetailFragment extends Fragment {
     private Step step;
     private SimpleExoPlayer player;
     @BindView(R.id.recipedescription_detail) TextView desc;
-    @BindView(R.id.recipe_buttons) RelativeLayout recipe_buttons;
-//    @BindView(R.id.n_recipe) Button n_recipe;
-//    @BindView(R.id.p_recipe) Button p_recipe;
     CollapsingToolbarLayout appBarLayout;
     AppBarLayout appBar;
     SimpleExoPlayerView playerView;
@@ -117,22 +114,12 @@ public class RecipeDescriptionDetailFragment extends Fragment {
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 playerView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
                 playerView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
-                recipe_buttons.setVisibility(View.GONE);
                 desc.setVisibility(View.GONE);
                 hideSystemUI();
             }
         }
     }
 
-    @OnClick(R.id.n_recipe)
-    public void nextRecipe(){
-
-    }
-
-    @OnClick(R.id.p_recipe)
-    public void previousRecipe(){
-
-    }
 
     public void hideSystemUI() {
         getActivity().getWindow().getDecorView().setSystemUiVisibility(

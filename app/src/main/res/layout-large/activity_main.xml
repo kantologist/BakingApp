@@ -10,9 +10,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.femi.bakingapp.MainActivity">
 
-    <GridView
-        android:id="@+id/recipe_list"
-        android:numColumns="auto_fit"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <GridView
+            android:id="@+id/recipe_list"
+            android:numColumns="auto_fit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
 </RelativeLayout>

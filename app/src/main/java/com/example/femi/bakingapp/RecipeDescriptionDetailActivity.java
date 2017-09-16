@@ -36,10 +36,7 @@ public class RecipeDescriptionDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
 
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
