@@ -1,5 +1,8 @@
 package Models;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import io.realm.RealmObject;
 
 /**
@@ -13,6 +16,7 @@ public class Step {
     private String description;
     private String videoURL;
     private String thumbnailURL;
+    private String thumbnailURI;
 
 
     public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
@@ -22,46 +26,33 @@ public class Step {
         this.description = description;
         this.videoURL = videoURL;
         this.thumbnailURL = thumbnailURL;
+        this.thumbnailURI = null;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getShortDescription() {
         return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getVideoURL() {
         return videoURL;
     }
 
-    public void setVideoURL(String videoURL) {
-        this.videoURL = videoURL;
+
+    public void setThumbnailURI(String thumbnailURI) {
+        this.thumbnailURI = thumbnailURI ;
     }
 
-    public String getThumbnailURL() {
-        return thumbnailURL;
-    }
-
-    public void setThumbnailURL(String thumbnailURL) {
-        this.thumbnailURL = thumbnailURL;
+    public String getThumbnailURI() {
+        return thumbnailURI;
     }
 
 }

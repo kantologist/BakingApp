@@ -1,14 +1,24 @@
 package com.example.femi.bakingapp;
 
+import android.Manifest;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +36,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import Adapters.RecipeDescriptionAdapter;
@@ -37,27 +49,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-/**
- * An activity representing a list of RecipeDtails. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link RecipeDescriptionDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
-public class RecipeDescriptionListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
+public class RecipeDescriptionListActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Void>{
+
+
     private boolean mTwoPane;
     private static final String RECIPE_KEY="recipe_key";
     private Recipe recipe;
     private List<Ingredient> ingredients;
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.ingredients) TextView ingredient_text;
+    @BindView(R.id.swipe_refresh_steps) SwipeRefreshLayout swipe_step;
     private String ing_list = "";
+    @BindView(R.id.recipedescription_list) RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,14 +96,45 @@ public class RecipeDescriptionListActivity extends AppCompatActivity {
         Timber.d("the new string is: " + ing_list);
 
 
-
-        View recyclerView = findViewById(R.id.recipedescription_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+//        setupRecyclerView((RecyclerView) recyclerView);
+
+
+        swipe_step.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        // check for initial loading
+        if (recipe.getLoaded()){
+            setupRecyclerView((RecyclerView) recyclerView);
+        } else {
+            getImageUri(this);
+        }
 
         if (findViewById(R.id.recipedescription_detail_container) != null) {
             mTwoPane = true;
         }
+    }
+
+    private void getImageUri(final RecipeDescriptionListActivity activity) {
+
+        swipe_step.post(new Runnable() {
+            @Override
+            public void run() {
+                swipe_step.setRefreshing(true);
+                Timber.e("I have set refreshing");
+                getSupportLoaderManager().initLoader(1, null, activity).forceLoad();
+            }
+        });
+
+//        swipe_step.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                Timber.e("I have listened to refresh");
+//                getSupportLoaderManager().initLoader(1, null, activity).forceLoad();
+//            }
+//        });
     }
 
     @OnClick(R.id.fab_love)
@@ -134,5 +170,24 @@ public class RecipeDescriptionListActivity extends AppCompatActivity {
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new RecipeDescriptionAdapter(this, recipe.getSteps()));
+    }
+
+    @Override
+    public Loader<Void> onCreateLoader(int id, Bundle args) {
+        return new FetchThumbnails(this, recipe);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Void> loader, Void data) {
+        swipe_step.setRefreshing(false);
+        setupRecyclerView((RecyclerView) recyclerView);
+        recipe.setLoaded(true);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Void> loader) {
+        swipe_step.setRefreshing(false);
+        setupRecyclerView((RecyclerView) recyclerView);
+        recipe.setLoaded(true);
     }
 }

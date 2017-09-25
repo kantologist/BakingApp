@@ -18,8 +18,7 @@ public class Recipe{
     private List<Step> steps;
     private int servings;
     private String image;
-
-    public Recipe(){}
+    private boolean loaded;
 
     public Recipe(int id, String name, List<Ingredient> ingredients,
                   List<Step> steps, int servings, String image){
@@ -30,6 +29,7 @@ public class Recipe{
         this.steps = steps;
         this.servings = servings;
         this.image = image;
+        this.loaded = false;
 
     }
 
@@ -53,26 +53,9 @@ public class Recipe{
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public int getServings() {
-
-        return servings;
-    }
-
-    public void setServings(int servings) {
-        this.servings = servings;
-    }
-
     public List<Step> getSteps() {
 
         return steps;
-    }
-
-    public void setSteps(List<Step> steps) {
-        this.steps = steps;
     }
 
     public List<Ingredient> getIngredients() {
@@ -80,7 +63,11 @@ public class Recipe{
         return ingredients;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
+    public boolean getLoaded(){
+        return this.loaded;
+    }
+
+    public void setLoaded(boolean loaded){
+        this.loaded = loaded;
     }
 }

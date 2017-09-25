@@ -2,7 +2,12 @@ package Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,17 +16,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.femi.bakingapp.FetchThumbnails;
 import com.example.femi.bakingapp.R;
 import com.example.femi.bakingapp.RecipeDescriptionDetailActivity;
 import com.example.femi.bakingapp.RecipeDescriptionDetailFragment;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.List;
 
 import Models.Step;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by femi on 9/7/17.
@@ -37,6 +46,7 @@ public class RecipeDescriptionAdapter
         public RecipeDescriptionAdapter(Context context,List<Step> items) {
             this.context=context;
             mValues = items;
+            Timber.plant(new Timber.DebugTree());
         }
 
         @Override
@@ -49,14 +59,25 @@ public class RecipeDescriptionAdapter
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            if (mValues.get(position).getThumbnailURL().isEmpty()) {
+            if (mValues.get(position).getThumbnailURI() == null) {
                 holder.step_image.setImageResource(R.drawable.recipe);
             } else{
-                Picasso.with(context)
-                        .load(mValues.get(position).getThumbnailURL())
-                        .placeholder(R.drawable.recipe)
-                        .error(R.drawable.recipe)
-                        .into(holder.step_image);
+                try{
+                    Timber.d("gotten bitmap");
+                    Picasso.with(context)
+                            .load(Uri.parse((mValues.get(position).getThumbnailURI())))
+                            .placeholder(R.drawable.recipe)
+                            .error(R.drawable.recipe)
+                            .into(holder.step_image);
+                } catch (Throwable t){
+
+                    Picasso.with(context)
+                            .load(R.drawable.recipe)
+                            .placeholder(R.drawable.recipe)
+                            .error(R.drawable.recipe)
+                            .into(holder.step_image);
+                }
+
             }
             holder.step_dec.setText(mValues.get(position).getShortDescription());
 

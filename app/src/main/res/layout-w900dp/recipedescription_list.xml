@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="Ingredients"
+                android:text="@string/ingredient"
                 android:textSize="25sp"
                 android:paddingLeft="@dimen/activity_vertical_margin"
                 android:textColor="@android:color/white"
@@ -45,17 +45,24 @@
                 android:background="@color/ingredient"
                 android:text="Hello testing"/>
 
-            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/recipedescription_list"
-                android:name="com.example.femi.bakingapp.RecipeDescriptionListFragment"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh_steps"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                app:layoutManager="LinearLayoutManager"
-                tools:context="com.example.femi.bakingapp.RecipeDescriptionListActivity"
-                tools:listitem="@layout/recipedescription_list_content" />
+                android:layout_height="500dp">
+                <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/recipedescription_list"
+                    android:name="com.example.femi.bakingapp.RecipeDescriptionListFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    app:layoutManager="LinearLayoutManager"
+                    tools:context="com.example.femi.bakingapp.RecipeDescriptionListActivity"
+                    tools:listitem="@layout/recipedescription_list_content" />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
 
         </LinearLayout>
 
