@@ -47,6 +47,7 @@ public class RecipeDescriptionAdapter
             this.context=context;
             mValues = items;
             Timber.plant(new Timber.DebugTree());
+            mTwoPane = context.getResources().getBoolean(R.bool.mTwoPane);
         }
 
         @Override
@@ -59,16 +60,12 @@ public class RecipeDescriptionAdapter
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            if (mValues.get(position).getThumbnailURI() == null) {
+            if (mValues.get(position).getImageBitmap() == null) {
                 holder.step_image.setImageResource(R.drawable.recipe);
             } else{
                 try{
                     Timber.d("gotten bitmap");
-                    Picasso.with(context)
-                            .load(Uri.parse((mValues.get(position).getThumbnailURI())))
-                            .placeholder(R.drawable.recipe)
-                            .error(R.drawable.recipe)
-                            .into(holder.step_image);
+                    holder.step_image.setImageBitmap(mValues.get(position).getImageBitmap());
                 } catch (Throwable t){
 
                     Picasso.with(context)

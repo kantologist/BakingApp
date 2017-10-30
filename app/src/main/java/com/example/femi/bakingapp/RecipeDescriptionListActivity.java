@@ -12,6 +12,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -68,6 +69,7 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipedescription_list);
+//        mTwoPane = getResources().getBoolean(R.bool.mTwoPane);
 
         ButterKnife.bind(this);
         Timber.plant(new Timber.DebugTree());
@@ -93,7 +95,6 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
                     +String.valueOf(ingredient.getMeasure())+")\n";
         }
         ingredient_text.setText(ing_list);
-        Timber.d("the new string is: " + ing_list);
 
 
         assert recyclerView != null;
@@ -123,7 +124,6 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
             @Override
             public void run() {
                 swipe_step.setRefreshing(true);
-                Timber.e("I have set refreshing");
                 getSupportLoaderManager().initLoader(1, null, activity).forceLoad();
             }
         });
@@ -148,15 +148,14 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
         appWidgetManager.updateAppWidget(widget, remoteViews);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-        Gson gson = new Gson();
-        String pass_recipe = gson.toJson(recipe);
-        outState.putString(RECIPE_KEY, pass_recipe);
-        Timber.d("I have saved it");
-        super.onSaveInstanceState(outState);
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//
+//        Gson gson = new Gson();
+//        String pass_recipe = gson.toJson(recipe);
+//        outState.putString(RECIPE_KEY, pass_recipe);
+//        super.onSaveInstanceState(outState);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -168,8 +167,19 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+    private void setupRecyclerView(@NonNull final RecyclerView recyclerView) {
         recyclerView.setAdapter(new RecipeDescriptionAdapter(this, recipe.getSteps()));
+//        recyclerView.findViewHolderForAdapterPosition(0).itemView.performClick();
+        //position to be clicked
+        if(mTwoPane){
+            final int pos = 0;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.findViewHolderForAdapterPosition(pos).itemView.performClick();
+                }
+            },1);
+        }
     }
 
     @Override
@@ -186,8 +196,8 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<Void> loader) {
-        swipe_step.setRefreshing(false);
-        setupRecyclerView((RecyclerView) recyclerView);
-        recipe.setLoaded(true);
+//        swipe_step.setRefreshing(false);
+//        setupRecyclerView((RecyclerView) recyclerView);
+//        recipe.setLoaded(true);
     }
 }

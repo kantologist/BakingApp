@@ -99,12 +99,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Gson gson = new Gson();
-        ArrayList<String> recipies_string = new ArrayList<String>();
-        for (Recipe recipe:recipies){
-            recipies_string.add(gson.toJson(recipe));
+        if (recipies != null){
+            Gson gson = new Gson();
+            ArrayList<String> recipies_string = new ArrayList<String>();
+            for (Recipe recipe:recipies){
+                recipies_string.add(gson.toJson(recipe));
+            }
+            outState.putStringArrayList(RECIPE_KEY, recipies_string);
         }
-        outState.putStringArrayList(RECIPE_KEY, recipies_string);
     }
 
     private void getRecipiesFromNetwork(final Activity activity){

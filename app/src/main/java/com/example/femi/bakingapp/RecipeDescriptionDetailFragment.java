@@ -42,13 +42,8 @@ import Models.Step;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
-/**
- * A fragment representing a single RecipeDescription detail screen.
- * This fragment is either contained in a {@link RecipeDescriptionListActivity}
- * in two-pane mode (on tablets) or a {@link RecipeDescriptionDetailActivity}
- * on handsets.
- */
 public class RecipeDescriptionDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     private Step step;
@@ -59,6 +54,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
     SimpleExoPlayerView playerView;
     private TrackSelector trackSelection;
     private MediaSource videoSource;
+    private long playerPosition;
 
 
     public RecipeDescriptionDetailFragment() {
@@ -72,6 +68,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
             String pass_step = getArguments().getString(ARG_ITEM_ID);
             Gson gson = new Gson();
             step = gson.fromJson(pass_step, Step.class);
+            Timber.plant(new Timber.DebugTree());
 
 
             Activity activity = this.getActivity();
@@ -93,6 +90,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
             desc.setText(step.getDescription());
         }
 
+
         return rootView;
     }
 
@@ -108,6 +106,11 @@ public class RecipeDescriptionDetailFragment extends Fragment {
             playerView.setUseController(true);
             playerView.requestFocus();
             initializePlayer();
+            if(savedInstanceState != null){
+                    playerPosition = savedInstanceState.getLong("Position");
+                    player.seekTo(playerPosition);
+                    Timber.d("seek new position");
+            }
 
             int orientation = getResources().getConfiguration().orientation;
 
@@ -132,6 +135,16 @@ public class RecipeDescriptionDetailFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (checkVideo()){
+            initializePlayer();
+            playerPosition = player.getCurrentPosition();
+            outState.putLong("Position", playerPosition);
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if(checkVideo()){
@@ -140,13 +153,13 @@ public class RecipeDescriptionDetailFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(checkVideo()){
-            initializePlayer();
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if(checkVideo()){
+//            initializePlayer();
+//        }
+//    }
 
     @Override
     public void onPause() {
@@ -169,9 +182,6 @@ public class RecipeDescriptionDetailFragment extends Fragment {
                 new AdaptiveTrackSelection.Factory(bandwidthMeter);
         trackSelection =
                 new DefaultTrackSelector(videoTrackSelectionFactory);
-
-
-
 
         player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelection);
 
