@@ -2,6 +2,7 @@ package Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
@@ -42,12 +43,15 @@ public class RecipeDescriptionAdapter
         private final List<Step> mValues;
         private boolean mTwoPane;
         private Context context;
+        private int orientation;
 
         public RecipeDescriptionAdapter(Context context,List<Step> items) {
             this.context=context;
             mValues = items;
             Timber.plant(new Timber.DebugTree());
             mTwoPane = context.getResources().getBoolean(R.bool.mTwoPane);
+            orientation = context.getResources().getConfiguration().orientation;
+
         }
 
         @Override
@@ -81,7 +85,7 @@ public class RecipeDescriptionAdapter
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mTwoPane) {
+                    if (mTwoPane && orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         Bundle arguments = new Bundle();
                         Gson gson = new Gson();
                         String step = gson.toJson(holder.mItem);

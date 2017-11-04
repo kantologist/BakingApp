@@ -86,8 +86,10 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
             ingredients = recipe.getIngredients();
         }
 
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
         toolbar.setTitle(recipe.getName());
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         for(Ingredient ingredient:ingredients){
             ing_list += "." + String.valueOf(ingredient.getIngredient())
@@ -148,14 +150,14 @@ public class RecipeDescriptionListActivity extends AppCompatActivity
         appWidgetManager.updateAppWidget(widget, remoteViews);
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//
-//        Gson gson = new Gson();
-//        String pass_recipe = gson.toJson(recipe);
-//        outState.putString(RECIPE_KEY, pass_recipe);
-//        super.onSaveInstanceState(outState);
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Gson gson = new Gson();
+        String pass_recipe = gson.toJson(recipe);
+        outState.putString(RECIPE_KEY, pass_recipe);
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

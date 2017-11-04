@@ -27,6 +27,7 @@ public class RecipeDescriptionDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.app_bar) AppBarLayout appBar;
     @BindView(R.id.detail_toolbar) Toolbar toolbar;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +54,15 @@ public class RecipeDescriptionDetailActivity extends AppCompatActivity {
 
         int orientation = getResources().getConfiguration().orientation;
 
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && !mTwoPane) {
             appBar.setVisibility(View.GONE);
         }
+
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override

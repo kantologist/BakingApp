@@ -16,7 +16,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -55,7 +57,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
     private TrackSelector trackSelection;
     private MediaSource videoSource;
     private long playerPosition;
-
+    private boolean mTwoPane;
 
     public RecipeDescriptionDetailFragment() {
     }
@@ -106,15 +108,17 @@ public class RecipeDescriptionDetailFragment extends Fragment {
             playerView.setUseController(true);
             playerView.requestFocus();
             initializePlayer();
+            playerPosition = C.TIME_UNSET;
             if(savedInstanceState != null){
-                    playerPosition = savedInstanceState.getLong("Position");
-                    player.seekTo(playerPosition);
-                    Timber.d("seek new position");
+                    playerPosition = savedInstanceState.getLong("Position", C.TIME_UNSET);
+
             }
 
             int orientation = getResources().getConfiguration().orientation;
+            mTwoPane = getResources().getBoolean(R.bool.mTwoPane);
 
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE && !mTwoPane) {
                 playerView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
                 playerView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
                 desc.setVisibility(View.GONE);
@@ -144,28 +148,22 @@ public class RecipeDescriptionDetailFragment extends Fragment {
         }
     }
 
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if(checkVideo()){
             initializePlayer();
         }
-
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if(checkVideo()){
-//            initializePlayer();
-//        }
-//    }
 
     @Override
     public void onPause() {
         super.onPause();
-        releasePlayer();
-
+        if(player != null){
+            playerPosition = player.getCurrentPosition();
+            releasePlayer();
+        }
     }
 
     @Override
@@ -196,6 +194,8 @@ public class RecipeDescriptionDetailFragment extends Fragment {
         Uri videoUri = Uri.parse(step.getVideoURL());
         videoSource = new ExtractorMediaSource(videoUri,
                 dataSourceFactory, extractorsFactory, null, null);
+        player.seekTo(playerPosition);
+        Timber.d("seek new position");
 
         player.prepare(videoSource);
     }
@@ -210,6 +210,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
 
     public void releasePlayer(){
         if(player!=null){
+            player.stop();
             player.release();
             player=null;
             trackSelection = null;
