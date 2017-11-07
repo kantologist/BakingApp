@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -66,16 +68,29 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState == null){
             getRecipies(this);
         } else {
-            Gson gson = new Gson();
-            ArrayList<String> recipies_string = savedInstanceState.getStringArrayList(RECIPE_KEY);
-            recipies = new ArrayList<Recipe>();
-            for(String recipe: recipies_string){
-                recipies.add(gson.fromJson(recipe, Recipe.class));
+            if (isNetworkAvailable()){
+                Gson gson = new Gson();
+                ArrayList<String> recipies_string = savedInstanceState.getStringArrayList(RECIPE_KEY);
+                recipies = new ArrayList<Recipe>();
+                for(String recipe: recipies_string){
+                    recipies.add(gson.fromJson(recipe, Recipe.class));
+                }
+                adapter = new RecipeAdapter(this, R.layout.item_recipe ,recipies);
+                absListView.setAdapter(adapter);
+            } else {
+                Toast.makeText(this, "Network problem. Refresh by pulling", Toast.LENGTH_SHORT)
+                        .show();
             }
-            adapter = new RecipeAdapter(this, R.layout.item_recipe ,recipies);
-            absListView.setAdapter(adapter);
+
         }
 
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void getRecipies(final Activity activity){

@@ -10,6 +10,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -58,6 +59,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
     private MediaSource videoSource;
     private long playerPosition;
     private boolean mTwoPane;
+    private boolean isPlayerPlaying;
 
     public RecipeDescriptionDetailFragment() {
     }
@@ -142,9 +144,22 @@ public class RecipeDescriptionDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (checkVideo()){
-            initializePlayer();
+//            initializePlayer();
             playerPosition = player.getCurrentPosition();
             outState.putLong("Position", playerPosition);
+        }
+    }
+
+    private void goToBackground(){
+        if(player != null){
+            isPlayerPlaying = player.getPlayWhenReady();
+            player.setPlayWhenReady(false);
+        }
+    }
+
+    private void goToForeground(){
+        if(player != null){
+            player.setPlayWhenReady(isPlayerPlaying);
         }
     }
 
@@ -154,6 +169,7 @@ public class RecipeDescriptionDetailFragment extends Fragment {
         super.onResume();
         if(checkVideo()){
             initializePlayer();
+            goToForeground();
         }
     }
 
@@ -162,42 +178,43 @@ public class RecipeDescriptionDetailFragment extends Fragment {
         super.onPause();
         if(player != null){
             playerPosition = player.getCurrentPosition();
-            releasePlayer();
+//            releasePlayer();
+            goToBackground();
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        releasePlayer();
-    }
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        releasePlayer();
+//    }
 
     public void initializePlayer(){
-        // player
-        Handler mainHandler = new Handler();
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        trackSelection =
-                new DefaultTrackSelector(videoTrackSelectionFactory);
 
-        player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelection);
 
-        if(checkVideo()){
-            playerView.setPlayer(player);
+        if (player == null && checkVideo()){
+            Handler mainHandler = new Handler();
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelection.Factory videoTrackSelectionFactory =
+                    new AdaptiveTrackSelection.Factory(bandwidthMeter);
+            trackSelection =
+                    new DefaultTrackSelector(videoTrackSelectionFactory);
+
+            player = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelection);
+
+            DefaultBandwidthMeter bandwidthMeter1 = new DefaultBandwidthMeter();
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
+                    Util.getUserAgent(getContext(), "BakingApp"), bandwidthMeter1);
+            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+            Uri videoUri = Uri.parse(step.getVideoURL());
+            videoSource = new ExtractorMediaSource(videoUri,
+                    dataSourceFactory, extractorsFactory, null, null);
+            player.prepare(videoSource);
         }
-
-        DefaultBandwidthMeter bandwidthMeter1 = new DefaultBandwidthMeter();
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(),
-                Util.getUserAgent(getContext(), "BakingApp"), bandwidthMeter1);
-        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        Uri videoUri = Uri.parse(step.getVideoURL());
-        videoSource = new ExtractorMediaSource(videoUri,
-                dataSourceFactory, extractorsFactory, null, null);
+        player.clearVideoSurface();
+        player.setVideoSurfaceView((SurfaceView)playerView.getVideoSurfaceView());
         player.seekTo(playerPosition);
-        Timber.d("seek new position");
-
-        player.prepare(videoSource);
+        playerView.setPlayer(player);
     }
 
     public boolean checkVideo(){
@@ -216,7 +233,6 @@ public class RecipeDescriptionDetailFragment extends Fragment {
             trackSelection = null;
         }
     }
-
 
 
     @Override
