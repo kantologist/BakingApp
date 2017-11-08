@@ -64,7 +64,11 @@ public class RecipeDescriptionAdapter
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            if (mValues.get(position).getImageBitmap() == null) {
+            if(!mValues.get(position).getThumbnailURL().isEmpty()){
+                Picasso.with(context)
+                        .load(mValues.get(position).getThumbnailURL())
+                        .into(holder.step_image);
+            } else if (mValues.get(position).getImageBitmap() == null) {
                 holder.step_image.setImageResource(R.drawable.recipe);
             } else{
                 try{

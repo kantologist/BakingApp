@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter = new RecipeAdapter(this, R.layout.item_recipe ,recipies);
                 absListView.setAdapter(adapter);
             } else {
-                Toast.makeText(this, "Network problem. Refresh by pulling", Toast.LENGTH_SHORT)
+                Snackbar.make(this.findViewById(R.id.activity_main), "Network problem. Refresh by pulling", Toast.LENGTH_SHORT)
                         .show();
             }
 
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 swipe.setRefreshing(false);
-                Toast.makeText(activity, "Network problem. Refresh by pulling", Toast.LENGTH_SHORT)
+                Snackbar.make(activity.findViewById(R.id.activity_main), "Network problem. Refresh by pulling", Toast.LENGTH_SHORT)
                         .show();
                 Timber.d("error: " + t.toString());
             }

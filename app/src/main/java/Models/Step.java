@@ -16,7 +16,6 @@ public class Step {
     private String description;
     private String videoURL;
     private String thumbnailURL;
-    private String thumbnailURI;
     private transient Bitmap imageBitmap;
 
 
@@ -27,7 +26,6 @@ public class Step {
         this.description = description;
         this.videoURL = videoURL;
         this.thumbnailURL = thumbnailURL;
-        this.thumbnailURI = null;
         this.imageBitmap=null;
     }
 
@@ -49,12 +47,12 @@ public class Step {
     }
 
 
-    public void setThumbnailURI(String thumbnailURI) {
-        this.thumbnailURI = thumbnailURI ;
+    public void setThumbnailURL(String thumbnailURI) {
+        this.thumbnailURL = thumbnailURL ;
     }
 
-    public String getThumbnailURI() {
-        return thumbnailURI;
+    public String getThumbnailURL() {
+        return thumbnailURL;
     }
 
     public Bitmap getImageBitmap() {
